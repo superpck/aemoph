@@ -29,7 +29,12 @@ $backwardTime = 10; //minute, ระยะเวลาที่อ่านข�
 ```
 
 ## Running
-
 ```
+Linux
+$ sudo crontab -e
+
+# add
+*/5 * * * * php /<directory>/send2moph.php
+
 ```
 
