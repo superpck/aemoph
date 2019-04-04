@@ -6,7 +6,7 @@ config
 config connect to `is` database
 */
 $isDB = [
-    'host' => 'localhost',
+    'host' => 'localhost',      // ที่เก็บ isdb
     'username' => 'isuser',
     'password' => 'password',
     'port' => '3306',
