@@ -1,6 +1,8 @@
 # aemoph
 
-config
+ควรใช้ php version 5.6+
+
+การ config
 ```
 /*==========================================================================
 config connect to `is` database
