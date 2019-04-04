@@ -39,6 +39,16 @@ if (date("H:i:s") == "01:00:00" || date("H:i:s") == "06:00:00") {
 }
 $Date2 = date("Y-m-d H:i:s");
 
+
+
+
+// กรณีที่ต้องการกำหนดวันที่เอง เพื่อส่งย้อนหลัง (ควรทำครังเดียว) ให้กำหนด เช่น
+// $Date1 = "2018-10-01";
+// $Date2 = "2018-10-31";
+
+
+
+
 echo "Start Process: ", date("Y-m-d H:i:s"), "\n";
 echo "crontab name: send `is` data to moph \n";
 echo "from: ", $Date1, " to ", $Date2, "\n";
