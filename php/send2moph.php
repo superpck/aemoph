@@ -24,12 +24,10 @@ $mophUser = [
     'mophTableName' => 'is'         // ชื่อตารางข้อมูลที่บันทึกในกระทรวง
 ];
 
-$backwardTime = 10; //minute, ระยะเวลาที่อ่านข้อมูลย้อนหลัง
-
 /*========================================================================*/
 
 // กำหนดช่วงเวลาที่ต้องการ get ข้อมูล
-$isTable = $isDB["dbname"];
+$backwardTime = 10; //minute, ระยะเวลาที่อ่านข้อมูลย้อนหลัง
 if (date("H:i:s") == "01:00:00" || date("H:i:s") == "06:00:00") {
     $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i"), 0, date("m"), date("d") - 1, date("Y")));
     $dateColumn = 'adate';
@@ -58,7 +56,8 @@ if (!$token || $token == '') {
 }
 
 // connect ไปยัง Mysql
-$isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $isDB["dbname"], $isDB["port"])
+$isTable = $isDB["dbname"];
+$isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $isTable, $isDB["port"])
     or die('Could not connect to the database server' . mysqli_connect_error());
 $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 
