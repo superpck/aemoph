@@ -34,7 +34,7 @@ if (date("H:i:s") == "01:00:00" || date("H:i:s") == "06:00:00") {
     $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i"), 0, date("m"), date("d") - 1, date("Y")));
     $dateColumn = 'adate';
 } else {
-    $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i") - $backwardTime, 0, date("m"), date("d"), date("Y")));
+    $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i") - $backwardTime - 1, 0, date("m"), date("d"), date("Y")));
     $dateColumn = 'lastupdate';
 }
 $Date2 = date("Y-m-d H:i:s");
