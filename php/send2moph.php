@@ -65,14 +65,16 @@ $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 // อ่านข้อมูล is
 $sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
 $result = $isDBconnect->query($sql);
-echo 'founded: ',$result->num_rows, ' rec.';
-if ($result->num_rows <= 0) {
+$reccount = $result->num_rows;
+echo 'founded: ',$reccount, ' rec.';
+if ($reccount <= 0) {
     $result->close();
     return;
 }
 
 // loop อ่านข้อมูลเพื่อส่งที่ละ record
 $rw = [];
+$recno = 0;
 while ($row = $result->fetch_array()) {
     unset($row["ref"]);
     unset($row["lastupdate"]);
@@ -84,7 +86,8 @@ while ($row = $result->fetch_array()) {
     $rw[0] = $row;
 
     // ส่งข้อมูลไปยังกระทรวง
-    send_moph($rw, $token, $mophUser);
+    $ret = send_moph($rw, $token, $mophUser);
+    echo ++$recno.'/'.$reccount, '>',$data["hn"], ' ', $data["id"], "\n";
 }
 
 // ปิด connection mysql
@@ -112,7 +115,6 @@ function send_moph($data, $token, $mophUser) {
     $server_output = curl_exec($Req);
     curl_close($Req);
 
-    echo '> ',$data["hn"], ' ', $data["id"], "\n";
     $ret = (array) json_decode($server_output);
     return $ret;
 }
