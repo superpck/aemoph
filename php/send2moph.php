@@ -45,7 +45,7 @@ $Date2 = date("Y-m-d H:i:s");
 // $Date2 = "2018-10-31 23:59:59";
 /*========================================================================*/
 
-$sql = "select * from $isTable.`is` where $$dateColumn between '$Date1' and '$Date2' order by $$dateColumn";
+$sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn";
 
 echo "Start Process: ", date("Y-m-d H:i:s"), "\n";
 echo "crontab name: send `is` data to moph \n";
