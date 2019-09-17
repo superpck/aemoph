@@ -43,9 +43,8 @@ $Date2 = date("Y-m-d H:i:s");
 // กรณีที่ต้องการกำหนดวันที่เอง เพื่อส่งย้อนหลัง (ควรทำครั้งเดียว) ให้กำหนดวันที่เอง เช่น
 // $Date1 = "2018-10-01 00:00:00";
 // $Date2 = "2018-10-31 23:59:59";
+// $dateColumn = 'adate';
 /*========================================================================*/
-
-$sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn";
 
 echo "Start Process: ", date("Y-m-d H:i:s"), "\n";
 echo "crontab name: send `is` data to moph \n";
@@ -64,7 +63,9 @@ $isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $
 $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 
 // อ่านข้อมูล is
+$sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
 $result = $isDBconnect->query($sql);
+echo 'founded ',$result->num_rows, ' rec.';
 if ($result->num_rows <= 0) {
     $result->close();
     return;
