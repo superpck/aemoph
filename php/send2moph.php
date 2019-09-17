@@ -32,10 +32,10 @@ $backwardTime = 10; //minute, ระยะเวลาที่อ่านข�
 $isTable = $isDB["dbname"];
 if (date("H:i:s") == "01:00:00" || date("H:i:s") == "06:00:00") {
     $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i"), 0, date("m"), date("d") - 1, date("Y")));
-    $sql = "select * from $isTable.`is` where adate > '$Date1 00:00:00' order by adate";
+    $dateColumn = 'adate';
 } else {
     $Date1 = date("Y-m-d H:i:s", mktime(date("H"), date("i") - $backwardTime, 0, date("m"), date("d"), date("Y")));
-    $sql = "select * from $isTable.`is` where lastupdate > '$Date1' order by lastupdate";
+    $dateColumn = 'lastupdate';
 }
 $Date2 = date("Y-m-d H:i:s");
 
@@ -44,6 +44,8 @@ $Date2 = date("Y-m-d H:i:s");
 // $Date1 = "2018-10-01 00:00:00";
 // $Date2 = "2018-10-31 23:59:59";
 /*========================================================================*/
+
+$sql = "select * from $isTable.`is` where $$dateColumn between '$Date1' and '$Date2' order by $$dateColumn";
 
 echo "Start Process: ", date("Y-m-d H:i:s"), "\n";
 echo "crontab name: send `is` data to moph \n";
