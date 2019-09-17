@@ -65,7 +65,7 @@ $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 // อ่านข้อมูล is
 $sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
 $result = $isDBconnect->query($sql);
-echo 'founded ',$result->num_rows, ' rec.';
+echo 'founded: ',$result->num_rows, ' rec.';
 if ($result->num_rows <= 0) {
     $result->close();
     return;
@@ -112,7 +112,7 @@ function send_moph($data, $token, $mophUser) {
     $server_output = curl_exec($Req);
     curl_close($Req);
 
-    echo $data["hn"], ' ', $data["id"], "\n";
+    echo '> ',$data["hn"], ' ', $data["id"], "\n";
     $ret = (array) json_decode($server_output);
     return $ret;
 }
