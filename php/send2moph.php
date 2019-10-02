@@ -86,7 +86,7 @@ while ($row = $result->fetch_array()) {
 
     // ส่งข้อมูลไปยังกระทรวง
     $ret = send_moph($rw, $token, $mophUser);
-    echo ++$recno.'/'.$reccount, '>',$data["hn"], ' ', $data["id"], "\n";
+    echo ++$recno.'/'.$reccount, '>',$row["hn"], ' ', $row["id"], "\n";
 }
 
 // ปิด connection mysql
