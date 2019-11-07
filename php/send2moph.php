@@ -81,7 +81,7 @@ while ($row = $result->fetch_assoc()) {
 
     // ส่งข้อมูลไปยังกระทรวง
     $ret = send_moph($row, $token, $mophUser);
-    echo ++$recno . '/' . $reccount, ' hn:', $row["hn"], ' id:', $row["id"], " result:" , $ret["statusCode"], ' ', $ret["message"] , "\n";
+    echo ++$recno . '/' . $reccount, ' hn:', $row["hn"], ' id:', $row["id"], " result:" , $ret["statusCode"],"\n";
 }
 
 // ปิด connection mysql
