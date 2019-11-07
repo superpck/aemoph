@@ -5,7 +5,7 @@ ini_set('memory_limit', '512M');
 
 /*==========================================================================
 config connect to `is` database
-*/
+ */
 $isDB = [
     'host' => 'localhost',
     'username' => 'isuser',
@@ -18,10 +18,11 @@ $isDB = [
 
 // config ค่าสำหรับการส่งข้อมูลเข้ากระทรวง
 $mophUser = [
-    'url' => 'http://ict-pher.moph.go.th:8080/v2/',
-    'username' => "user",     // ระบุ username ที่ขอไว้กับระทรวง
-    'password' => "password",       // ระบุ password ที่ให้ไว้กับกระทรวง
-    'mophTableName' => 'is'         // ชื่อตารางข้อมูลที่บันทึกในกระทรวง
+    // 'url' => 'http://ict-pher.moph.go.th:8080/v2/',
+    'url' => 'http://ae.moph.go.th:3006/',
+    'username' => "user", // ระบุ username ที่ขอไว้กับระทรวง
+    'password' => "password", // ระบุ password ที่ให้ไว้กับกระทรวง
+    'mophTableName' => 'is', // ชื่อตารางข้อมูลที่บันทึกในกระทรวง
 ];
 
 /*========================================================================*/
@@ -58,14 +59,14 @@ if (!$token || $token == '') {
 // connect ไปยัง Mysql
 $isTable = $isDB["dbname"];
 $isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $isTable, $isDB["port"])
-    or die('Could not connect to the database server' . mysqli_connect_error());
+or die('Could not connect to the database server' . mysqli_connect_error());
 $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 
 // อ่านข้อมูล is
 $sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
 $result = $isDBconnect->query($sql);
 $reccount = $result->num_rows;
-echo 'founded: ',$reccount, ' rec.';
+echo 'founded: ', $reccount, " rec.\n";
 if ($reccount <= 0) {
     $result->close();
     return;
@@ -74,19 +75,13 @@ if ($reccount <= 0) {
 // loop อ่านข้อมูลเพื่อส่งที่ละ record
 $rw = [];
 $recno = 0;
-while ($row = $result->fetch_array()) {
+while ($row = $result->fetch_assoc()) {
     unset($row["ref"]);
     unset($row["lastupdate"]);
-    foreach ($row as $column => $value) {
-        if ($column == '0' || $column + 0 > 0) {
-            unset($row[$column]);
-        }
-    }
-    $rw[0] = $row;
 
     // ส่งข้อมูลไปยังกระทรวง
-    $ret = send_moph($rw, $token, $mophUser);
-    echo ++$recno.'/'.$reccount, '>',$row["hn"], ' ', $row["id"], "\n";
+    $ret = send_moph($row, $token, $mophUser);
+    echo ++$recno . '/' . $reccount, ' hn:', $row["hn"], ' id:', $row["id"], " result:" , $ret["statusCode"], ' ', $ret["message"] , "\n";
 }
 
 // ปิด connection mysql
@@ -99,14 +94,18 @@ echo "\nEnd Process: ", date("Y-m-d H:i:s"), "\n";
 return;
 
 // request send function =========================================
-function send_moph($data, $token, $mophUser) {
+function send_moph($data, $token, $mophUser)
+{
     $request = [];
     $request["tokenKey"] = $token;
-    $request["tableName"] = $mophUser['mophTableName'];
-    $request["content"] = json_encode($data);
+    $request["data"] = $data;
+
+    $headers = [];
+    $headers[] = 'Authorization: Bearer '.$token;
 
     $Req = curl_init();
-    curl_setopt($Req, CURLOPT_URL, $mophUser['url'].'save');
+    curl_setopt($Req, CURLOPT_HTTPHEADER,$headers);
+    curl_setopt($Req, CURLOPT_URL, $mophUser['url'] . 'isonline/put-is');
     curl_setopt($Req, CURLOPT_POST, 1);
     curl_setopt($Req, CURLOPT_POSTFIELDS, http_build_query($request));
     curl_setopt($Req, CURLOPT_RETURNTRANSFER, true);
@@ -119,15 +118,12 @@ function send_moph($data, $token, $mophUser) {
 }
 
 // request create token function =========================================
-function getToken($mophUser) {
-    $request = [];
-    $request["username"] = $mophUser['username'];
-    $request["password"] = $mophUser['password'];
-
+function getToken($mophUser)
+{
     $Req = curl_init();
-    curl_setopt($Req, CURLOPT_URL, $mophUser['url'].'create-token/');
+    curl_setopt($Req, CURLOPT_URL, $mophUser['url'] . 'isonline/token');
     curl_setopt($Req, CURLOPT_POST, 1);
-    curl_setopt($Req, CURLOPT_POSTFIELDS, http_build_query($request));
+    curl_setopt($Req, CURLOPT_POSTFIELDS, http_build_query($mophUser));
     curl_setopt($Req, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($Req, CURLOPT_SSL_VERIFYPEER, 0);
     $server_output = curl_exec($Req);
@@ -138,10 +134,16 @@ function getToken($mophUser) {
 }
 
 // request expire token function =========================================
-function expireToken($token, $mophUser) {
-    $Url = $mophUser['url'] . 'expire-token/' . $token;
+function expireToken($token, $mophUser)
+{
+    $Url = $mophUser['url'] . 'expire';
     $request = [];
+    $request["token"] = $token;
+    $headers = [];
+    $headers[] = 'Authorization: Bearer '.$token;
+
     $Req = curl_init();
+    curl_setopt($Req, CURLOPT_HTTPHEADER,$headers);
     curl_setopt($Req, CURLOPT_URL, $Url);
     curl_setopt($Req, CURLOPT_POST, 1);
     curl_setopt($Req, CURLOPT_POSTFIELDS, http_build_query($request));
