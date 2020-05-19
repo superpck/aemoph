@@ -17,6 +17,7 @@ $isDB = [
 ];
 
 // config ค่าสำหรับการส่งข้อมูลเข้ากระทรวง
+// user เดียวกันกับที่ใช้ใน website http://ae.moph.go.th/moph
 $mophUser = [
     // 'url' => 'http://ict-pher.moph.go.th:8080/v2/',
     'url' => 'http://ae.moph.go.th:3006/',
