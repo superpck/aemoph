@@ -47,7 +47,7 @@ $Date2 = date("Y-m-d H:i:s");
 
 echo "Start Process: ", date("Y-m-d H:i:s"), "\n";
 echo "crontab name: send `is` data to moph \n";
-echo "from: ", $Date1, " to ", $Date2, "\n";
+echo "from: $Date1 to $Date2\n";
 
 // สร้าง token เพื่อใช้ในการส่งข้อมูล
 $token = getToken($mophUser);
@@ -57,13 +57,13 @@ if (!$token || $token == '') {
 }
 
 // connect ไปยัง Mysql
-$isTable = $isDB["dbname"];
-$isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $isTable, $isDB["port"])
+$isDbName = $isDB["dbname"];
+$isDBconnect = new mysqli($isDB["host"], $isDB["username"], $isDB["password"], $isDbName, $isDB["port"])
 or die('Could not connect to the database server' . mysqli_connect_error());
 $isDBconnect->query("SET NAMES " . $isDB["charset"]);
 
 // อ่านข้อมูล is
-$sql = "select * from $isTable.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
+$sql = "select * from $isDbName.`is` where $dateColumn between '$Date1' and '$Date2' order by $dateColumn ";
 $result = $isDBconnect->query($sql);
 $reccount = $result->num_rows;
 echo 'founded: ', $reccount, " rec.\n";
